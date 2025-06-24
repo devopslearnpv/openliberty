@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: demo-simple
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: demo-simple-quota
+  namespace: demo-simple
+spec:
+  hard:
+    pods: "5"
+    requests.cpu: "1"
+    requests.memory: 1Gi
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: container-defaults
+  namespace: demo-simple
+spec:
+  limits:
+  - default:
+      cpu: 250m
+      memory: 256Mi
+    type: Container
