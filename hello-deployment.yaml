@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-liberty
+  namespace: demo-simple
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-liberty
+  template:
+    metadata:
+      labels:
+        app: hello-liberty
+    spec:
+      containers:
+      - name: hello-liberty
+        image: prashanthvedarathna/hello-liberty:1.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9080
+        env:
+        - name: APP_GREETING
+          valueFrom:
+            configMapKeyRef:
+              name: hello-config
+              key: APP_GREETING
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 9080
+          initialDelaySeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 9080
+          initialDelaySeconds: 10
